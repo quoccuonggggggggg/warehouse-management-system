@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Quản lý Kho Hàng - Admin</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header/Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-warehouse"></i>
+                <span>Quản lý Kho Hàng</span>
+            </div>
+            <div class="navbar-menu">
+                <a href="#" class="nav-link active" onclick="switchPage('dashboard')">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="#" class="nav-link" onclick="switchPage('users')">
+                    <i class="fas fa-users"></i> Quản lý Tài khoản
+                </a>
+                <a href="#" class="nav-link" onclick="switchPage('products')">
+                    <i class="fas fa-boxes"></i> Sản phẩm
+                </a>
+                <a href="#" class="nav-link" onclick="switchPage('inventory')">
+                    <i class="fas fa-clipboard-list"></i> Tồn kho
+                </a>
+            </div>
+            <div class="navbar-right">
+                <div class="admin-profile">
+                    <div class="avatar-small">AD</div>
+                    <span>Admin</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-menu">
+            <a href="#" class="sidebar-item active" onclick="switchPage('dashboard')">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="sidebar-item" onclick="switchPage('users')">
+                <i class="fas fa-users"></i>
+                <span>Quản lý Tài khoản</span>
+            </a>
+            <a href="#" class="sidebar-item" onclick="switchPage('products')">
+                <i class="fas fa-boxes"></i>
+                <span>Sản phẩm</span>
+            </a>
+            <a href="#" class="sidebar-item" onclick="switchPage('inventory')">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Tồn kho</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="page active">
+            <div class="page-header">
+                <h1>Dashboard</h1>
+                <p>Tổng quan hệ thống quản lý kho hàng</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #e3f2fd;">
+                        <i class="fas fa-users" style="color: #1976d2;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalUsers">0</h3>
+                        <p>Tổng tài khoản</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #e8f5e9;">
+                        <i class="fas fa-check-circle" style="color: #388e3c;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="activeUsers">0</h3>
+                        <p>Tài khoản hoạt động</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #fff3e0;">
+                        <i class="fas fa-lock" style="color: #f57c00;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="lockedUsers">0</h3>
+                        <p>Tài khoản bị khóa</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #f3e5f5;">
+                        <i class="fas fa-user-tie" style="color: #7b1fa2;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="adminCount">0</h3>
+                        <p>Quản trị viên</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h2>Vai trò phân bố</h2>
+                    <div class="role-distribution">
+                        <div class="role-item">
+                            <span>Admin</span>
+                            <div class="progress-bar">
+                                <div class="progress" id="adminProgress"></div>
+                            </div>
+                            <span id="adminPercent">0%</span>
+                        </div>
+                        <div class="role-item">
+                            <span>Quản lý kho</span>
+                            <div class="progress-bar">
+                                <div class="progress" id="managerProgress"></div>
+                            </div>
+                            <span id="managerPercent">0%</span>
+                        </div>
+                        <div class="role-item">
+                            <span>Nhân viên</span>
+                            <div class="progress-bar">
+                                <div class="progress" id="staffProgress"></div>
+                            </div>
+                            <span id="staffPercent">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Trạng thái tài khoản</h2>
+                    <div class="status-distribution">
+                        <div class="status-item">
+                            <div class="status-circle" style="background-color: #4caf50;"></div>
+                            <span>Hoạt động: <strong id="statusActive">0</strong></span>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-circle" style="background-color: #ff9800;"></div>
+                            <span>Chưa kích hoạt: <strong id="statusInactive">0</strong></span>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-circle" style="background-color: #f44336;"></div>
+                            <span>Bị khóa: <strong id="statusLocked">0</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Management Page -->
+        <div id="users" class="page">
+            <div class="page-header">
+                <div>
+                    <h1>Quản lý Tài khoản</h1>
+                    <p>Thêm, chỉnh sửa, xóa tài khoản người dùng</p>
+                </div>
+                <button class="btn btn-primary" onclick="openAddUserModal()">
+                    <i class="fas fa-plus"></i> Thêm tài khoản
+                </button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="filters-section">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Tìm theo tên, email, username..." onkeyup="filterUsers()">
+                </div>
+                <div class="filter-group">
+                    <select id="roleFilter" onchange="filterUsers()">
+                        <option value="">Tất cả vai trò</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Quản lý kho">Quản lý kho</option>
+                        <option value="Nhân viên">Nhân viên</option>
+                    </select>
+                    <select id="statusFilter" onchange="filterUsers()">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="Hoạt động">Hoạt động</option>
+                        <option value="Chưa kích hoạt">Chưa kích hoạt</option>
+                        <option value="Bị khóa">Bị khóa</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="card">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Thông tin</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>SĐT</th>
+                            <th>Vai trò</th>
+                            <th>Phòng ban</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- Users will be populated here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Products Page -->
+        <div id="products" class="page">
+            <div class="page-header">
+                <h1>Quản lý Sản phẩm</h1>
+                <p>Danh sách sản phẩm trong kho</p>
+            </div>
+            <div class="card">
+                <p style="text-align: center; color: #999; padding: 40px;">Tính năng quản lý sản phẩm sẽ được phát triển...</p>
+            </div>
+        </div>
+
+        <!-- Inventory Page -->
+        <div id="inventory" class="page">
+            <div class="page-header">
+                <h1>Quản lý Tồn kho</h1>
+                <p>Theo dõi tồn kho và các giao dịch</p>
+            </div>
+            <div class="card">
+                <p style="text-align: center; color: #999; padding: 40px;">Tính năng quản lý tồn kho sẽ được phát triển...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Thêm tài khoản mới</h2>
+                <button class="modal-close" onclick="closeUserModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="userForm" onsubmit="saveUser(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Tên <span class="required">*</span></label>
+                        <input type="text" id="fullName" placeholder="Ví dụ: Nguyễn Văn A" required onchange="updateAvatar()" onkeyup="validateForm()">
+                        <span class="error-message" id="fullNameError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Username <span class="required">*</span></label>
+                        <input type="text" id="username" placeholder="Ví dụ: nguyenvana" required onkeyup="validateForm()">
+                        <span class="error-message" id="usernameError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" id="email" placeholder="Ví dụ: a@example.com" required onkeyup="validateForm()">
+                        <span class="error-message" id="emailError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>SĐT <span class="required">*</span></label>
+                        <input type="tel" id="phone" placeholder="Ví dụ: 0912345678" required onkeyup="validateForm()">
+                        <span class="error-message" id="phoneError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phòng ban <span class="required">*</span></label>
+                        <select id="department" required onchange="validateForm()">
+                            <option value="">-- Chọn phòng ban --</option>
+                            <option value="Quản lý">Quản lý</option>
+                            <option value="Kho">Kho</option>
+                            <option value="Logistics">Logistics</option>
+                            <option value="IT">IT</option>
+                        </select>
+                        <span class="error-message" id="departmentError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Chức năng <span class="required">*</span></label>
+                        <input type="text" id="position" placeholder="Ví dụ: Quản lý kho" required onkeyup="validateForm()">
+                        <span class="error-message" id="positionError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Vai trò <span class="required">*</span></label>
+                        <select id="role" required onchange="updatePermissions(); validateForm()">
+                            <option value="">-- Chọn vai trò --</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Quản lý kho">Quản lý kho</option>
+                            <option value="Nhân viên">Nhân viên</option>
+                        </select>
+                        <span class="error-message" id="roleError"></span>
+                        <div id="permissionsPreview" class="permissions-preview"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mật khẩu <span class="required">*</span></label>
+                        <input type="password" id="password" placeholder="Nhập mật khẩu" required onkeyup="validateForm()">
+                        <span class="error-message" id="passwordError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Xác nhận mật khẩu <span class="required">*</span></label>
+                        <input type="password" id="confirmPassword" placeholder="Xác nhận mật khẩu" required onkeyup="validateForm()">
+                        <span class="error-message" id="confirmPasswordError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trạng thái <span class="required">*</span></label>
+                        <select id="status" required onchange="validateForm()">
+                            <option value="Hoạt động">Hoạt động</option>
+                            <option value="Chưa kích hoạt">Chưa kích hoạt</option>
+                            <option value="Bị khóa">Bị khóa</option>
+                        </select>
+                        <span class="error-message" id="statusError"></span>
+                    </div>
+
+                    <div class="form-group avatar-preview">
+                        <label>Avatar</label>
+                        <div class="avatar-large" id="avatarPreview">--</div>
+                        <p style="font-size: 12px; color: #999; margin-top: 10px;">Tự động sinh từ tên</p>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeUserModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content modal-profile">
+            <div class="modal-header">
+                <h2>Thông tin chi tiết</h2>
+                <button class="modal-close" onclick="closeProfileModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="profile-body">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">--</div>
+                    <div class="profile-info">
+                        <h3 id="profileName">--</h3>
+                        <p id="profileRole">--</p>
+                        <div class="status-badge" id="profileStatus">--</div>
+                    </div>
+                </div>
+
+                <div class="profile-grid">
+                    <div class="profile-item">
+                        <label>Username</label>
+                        <p id="profileUsername">--</p>
+                    </div>
+                    <div class="profile-item">
+                        <label>Email</label>
+                        <p id="profileEmail">--</p>
+                    </div>
+                    <div class="profile-item">
+                        <label>SĐT</label>
+                        <p id="profilePhone">--</p>
+                    </div>
+                    <div class="profile-item">
+                        <label>Phòng ban</label>
+                        <p id="profileDepartment">--</p>
+                    </div>
+                    <div class="profile-item">
+                        <label>Chức năng</label>
+                        <p id="profilePosition">--</p>
+                    </div>
+                    <div class="profile-item">
+                        <label>Ngày tạo</label>
+                        <p id="profileCreated">--</p>
+                    </div>
+                </div>
+
+                <div class="permissions-section">
+                    <h4>Quyền hạn</h4>
+                    <div id="profilePermissions" class="permissions-list"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeProfileModal()">Đóng</button>
+                <button type="button" class="btn btn-primary" id="editProfileBtn">Chỉnh sửa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content modal-confirm">
+            <div class="confirm-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2>Xác nhận xóa tài khoản</h2>
+            <p>Bạn có chắc chắn muốn xóa tài khoản <strong id="confirmUsername">--</strong>?</p>
+            <p style="color: #f44336; font-size: 14px; margin-top: 15px;">
+                <i class="fas fa-info-circle"></i> Hành động này không thể hoàn tác!
+            </p>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeConfirmModal()">Hủy</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Xóa ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toggle Status Modal -->
+    <div id="toggleStatusModal" class="modal">
+        <div class="modal-content modal-confirm">
+            <div id="toggleIcon" class="confirm-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h2 id="toggleTitle">Khóa tài khoản</h2>
+            <p id="toggleMessage">Bạn có chắc chắn muốn thay đổi trạng thái?</p>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeToggleStatusModal()">Hủy</button>
+                <button type="button" class="btn btn-warning" id="toggleConfirmBtn" onclick="confirmToggleStatus()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
